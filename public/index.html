@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIP STORE | Premium Shopping</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
+header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #333;position:sticky;top:0;background:#101010;z-index:5}
+.logo{font-size:26px;font-weight:bold;color:#d5ad55;letter-spacing:2px}
+.cart{color:#d5ad55;font-weight:bold}
+.hero{text-align:center;padding:75px 15px;background:linear-gradient(120deg,#191919,#302416)}
+.hero h1{font-size:clamp(32px,6vw,52px);margin:0}
+.hero h1 span{color:#d5ad55}
+.hero p{color:#ccc}
+.search{display:block;width:min(600px,90%);margin:25px auto;padding:15px;border-radius:6px;border:1px solid #555;background:#202020;color:white;font-size:16px}
+.categories{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:25px 12px}
+.categories button{background:#222;color:#d5ad55;border:1px solid #555}
+.categories button.active{background:#d5ad55;color:#111}
+button{padding:12px 18px;border:0;border-radius:5px;font-weight:bold;cursor:pointer}
+h2{text-align:center;color:#d5ad55;margin:25px}
+.products{padding:10px 5% 65px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px}
+.product{background:#1c1c1c;border:1px solid #333;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:18px}
+.product img{width:100%;height:205px;object-fit:cover;background:#222}
+.product h3{margin:15px 5px 8px}
+.category{font-size:12px;color:#aaa}
+.price{color:#d5ad55;font-size:20px;font-weight:bold}
+.product button{background:#d5ad55;color:#111}
+.product button:hover{background:#f0cb78}
+footer{text-align:center;padding:30px;background:#080808;color:#aaa}
+#cartItems{max-width:600px;margin:20px auto;padding:15px}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">VIP STORE</div>
+<div class="cart">🛒 BASKET: <span id="count">0</span></div>
+</header>
+
+<section class="hero">
+<h1>WELCOME TO <span>VIP STORE</span></h1>
+<p>Discover quality. Discover style. Shop VIP.</p>
+</section>
+
+<input class="search" id="search" placeholder="Search products..." oninput="render()">
+
+<nav class="categories" id="categories">
+<button class="active" onclick="setCategory('All',this)">ALL</button>
+<button onclick="setCategory('Electronics',this)">ELECTRONICS</button>
+<button onclick="setCategory('Fashion',this)">FASHION</button>
+<button onclick="setCategory('Home',this)">HOME</button>
+<button onclick="setCategory('Lifestyle',this)">LIFESTYLE</button>
+</nav>
+
+<h2>OUR COLLECTION</h2>
+<section class="products" id="products"></section>
+
+<section id="cartItems"></section>
+
+<footer>
+<p>VIP STORE © 2026</p>
+<p>Premium shopping, made simple.</p>
+</footer>
+
+<script>
+const items=[
+["Wireless Headphones","Electronics",49.99,"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700"],
+["Smart Watch","Electronics",59.99,"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700"],
+["Bluetooth Speaker","Electronics",34.99,"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=700"],
+["Gaming Headset","Electronics",44.99,"https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=700"],
+["Wireless Earbuds","Electronics",29.99,"https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=700"],
+["Luxury Sunglasses","Fashion",24.99,"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=700"],
+["Classic Wristwatch","Fashion",64.00,"https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=700"],
+["Leather Handbag","Fashion",49.99,"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700"],
+["Fashion Backpack","Fashion",42.00,"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700"],
+["Elegant Jewellery","Fashion",19.99,"https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=700"],
+["Modern Table Lamp","Home",38.50,"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=700"],
+["Decorative Vase","Home",22.99,"https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=700"],
+["Wall Clock","Home",27.99,"https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=700"],
+["Home Cushion Set","Home",18.99,"https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=700"],
+["LED Desk Light","Home",32.99,"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=700"],
+["Fitness Bottle","Lifestyle",14.99,"https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=700"],
+["Sports Bag","Lifestyle",35.99,"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700"],
+["Yoga Mat","Lifestyle",21.99,"https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=700"],
+["Travel Accessories","Lifestyle",25.99,"https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=700"],
+["Fitness Accessories","Lifestyle",17.99,"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=700"]
+];
+
+let category="All";
+let basket=[];
+
+function setCategory(value,button){
+category=value;
+document.querySelectorAll(".categories button").forEach(b=>b.classList.remove("active"));
+button.classList.add("active");
+render();
+}
+
+function render(){
+const term=document.getElementById("search").value.toLowerCase();
+const filtered=items.filter(p=>
+(category==="All"||p[1]===category)&&p[0].toLowerCase().includes(term)
+);
+document.getElementById("products").innerHTML=filtered.map(p=>`
+<div class="product">
+<img src="${p[3]}" alt="${p[0]}" loading="lazy">
+<p class="category">${p[1]}</p>
+<h3>${p[0]}</h3>
+<p class="price">£${p[2].toFixed(2)}</p>
+<button onclick="add('${p[0]}')">ADD TO BASKET</button>
+</div>`).join("") || "<p>No products found.</p>";
+}
+
+function add(name){
+basket.push(name);
+document.getElementById("count").textContent=basket.length;
+showCart();
+}
+
+function showCart(){
+document.getElementById("cartItems").innerHTML=
+"<h2>YOUR BASKET</h2>"+
+(basket.length?basket.map((name,i)=>`<p>${name} <button onclick="removeItem(${i})">Remove</button></p>`).join(""):"<p>Your basket is empty.</p>");
+}
+
+function removeItem(i){
+basket.splice(i,1);
+document.getElementById("count").textContent=basket.length;
+showCart();
+}
+
+render();
+showCart();
+</script>
+</body>
+</html>
