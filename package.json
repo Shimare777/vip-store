@@ -1,0 +1,15 @@
+{
+  "name": "vip-store-custom-commerce",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom VIP STORE storefront starter with Stripe Checkout and supplier integration adapter",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "stripe": "^17.5.0"
+  }
+}
