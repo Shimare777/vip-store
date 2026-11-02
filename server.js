@@ -87,4 +87,4 @@ app.get("/api/supplier/status", (_req, res) => {
   });
 });
 
-app.listen(port, () => console.log(...));
+app.listen(port, () => console.log(`VIP STORE running at http://localhost:${port}`));
