@@ -138,6 +138,9 @@ function setCategory(value, button) {
   }
 }
 
+function render() {
+  const products = document.getElementById("products");
+
   if (!items.length) {
     products.innerHTML = "<p>No products found.</p>";
     return;
@@ -157,7 +160,6 @@ function setCategory(value, button) {
     </div>
   `).join("");
 }
-
 function add(id) {
   const product = items.find(p => p.id === id);
 
