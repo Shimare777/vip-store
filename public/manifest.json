@@ -1,0 +1,23 @@
+{
+  "name": "VIP STORE",
+  "short_name": "VIP STORE",
+  "description": "Premium Shopping Experience",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#D8B66A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/vip-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
