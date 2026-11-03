@@ -144,7 +144,7 @@ app.get("/api/supplier/status", async (_req, res) => {
       message: err.message
     });
   }
-
+});
 // Search CJdropshipping products by category
 app.get("/api/cj/products", async (req, res) => {
   try {
