@@ -402,82 +402,96 @@ document.querySelectorAll(".categories button").forEach(button => {
 });
 
 async function loadProducts() {
+
   const currentRequest = ++requestNumber;
+
   const search = document.getElementById("search").value.trim();
+
   const products = document.getElementById("products");
 
-  products.innerHTML = '<p id="message">Loading VIP STORE products...</p>';
+  products.innerHTML =
+
+    '<p id="message">Loading VIP STORE products...</p>';
 
   try {
+
     const params = new URLSearchParams();
 
     if (search) {
+
       params.set("keyword", search);
+
     } else {
+
       params.set("category", category);
+
     }
 
-if (search) {
+    const response = await fetch(
 
-  params.set("keyword", search);
+      "/api/cj/products?" + params.toString()
 
-} else {
+    );
 
-  params.set("category", category);
+    if (!response.ok) {
 
-}
+      throw new Error("API error: " + response.status);
 
-console.log("CJ RESPONSE STATUS:", response.status);
+    }
 
-const result = await response.json();
-
-console.log("CJ PRODUCTS:", result);
+    const result = await response.json();
 
     if (currentRequest !== requestNumber) return;
 
     const received = result.products || [];
 
-    // Remove products with the same ID or identical name.
     const seenIDs = new Set();
+
     const seenNames = new Set();
 
     const uniqueProducts = received.filter(product => {
+
       const id = String(product.id || "");
+
       const name = String(product.name || "")
+
         .toLowerCase()
+
         .replace(/[^a-z0-9]/g, "");
 
       if (!name || seenNames.has(name)) return false;
+
       if (id && seenIDs.has(id)) return false;
 
       seenNames.add(name);
+
       if (id) seenIDs.add(id);
 
       return true;
+
     });
 
     items.length = 0;
+
     items.push(...uniqueProducts);
 
     render();
 
   } catch (error) {
+
     if (currentRequest !== requestNumber) return;
 
     console.error("VIP STORE ERROR:", error);
 
-products.innerHTML = `
+    products.innerHTML =
 
-  <p id="message">
+      '<p id="message">Loading error: ' +
 
-    Loading error: ${escapeHTML(error.message)}
+      escapeHTML(error.message) +
 
-  </p>
-
-  `;
+      '</p>';
 
   }
-
 }
 function render() {
   const products = document.getElementById("products");
