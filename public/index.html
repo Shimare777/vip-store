@@ -1,87 +1,253 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#090909">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090909">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>VIP STORE | Premium Shopping</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
-header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #333;position:sticky;top:0;background:#101010;z-index:5}
-.logo{font-size:26px;font-weight:bold;color:#d5ad55;letter-spacing:2px}
-.cart{color:#d5ad55;font-weight:bold}
-.hero{text-align:center;padding:75px 15px;background:linear-gradient(120deg,#191919,#302416)}
-.hero h1{font-size:clamp(32px,6vw,52px);margin:0}
+
+body{
+  margin:0;
+  background:#101010;
+  color:white;
+  font-family:Arial,sans-serif
+}
+
+header{
+  padding:20px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #333;
+  position:sticky;
+  top:0;
+  background:#101010;
+  z-index:5
+}
+
+.logo{
+  font-size:26px;
+  font-weight:bold;
+  color:#d5ad55;
+  letter-spacing:2px
+}
+
+.cart{
+  color:#d5ad55;
+  font-weight:bold
+}
+
+.hero{
+  text-align:center;
+  padding:75px 15px;
+  background:linear-gradient(120deg,#191919,#302416)
+}
+
+.hero h1{
+  font-size:clamp(32px,6vw,52px);
+  margin:0
+}
+
 .hero h1 span{color:#d5ad55}
+
 .hero p{color:#ccc}
-.search{display:block;width:min(600px,90%);margin:25px auto;padding:15px;border-radius:6px;border:1px solid #555;background:#202020;color:white;font-size:16px}
-.categories{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:25px 12px}
-.categories button{background:#222;color:#d5ad55;border:1px solid #555}
-.categories button.active{background:#d5ad55;color:#111}
-button{padding:12px 18px;border:0;border-radius:5px;font-weight:bold;cursor:pointer}
-h2{text-align:center;color:#d5ad55;margin:25px}
-.products{padding:10px 5% 65px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px}
-.product{background:#1c1c1c;border:1px solid #333;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:18px}
-.product img{width:100%;height:205px;object-fit:cover;background:#222}
-.product h3{margin:15px 5px 8px}
-.category{font-size:12px;color:#aaa}
-.price{color:#d5ad55;font-size:20px;font-weight:bold}
-.product button{background:#d5ad55;color:#111}
-.product button:hover{background:#f0cb78}
-footer{text-align:center;padding:30px;background:#080808;color:#aaa}
-#cartItems{max-width:600px;margin:20px auto;padding:15px}
+
+.search{
+  display:block;
+  width:min(600px,90%);
+  margin:25px auto;
+  padding:15px;
+  border-radius:6px;
+  border:1px solid #555;
+  background:#202020;
+  color:white;
+  font-size:16px
+}
+
+.categories{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:25px 12px
+}
+
+button{
+  padding:12px 18px;
+  border:0;
+  border-radius:5px;
+  font-weight:bold;
+  cursor:pointer
+}
+
+.categories button{
+  background:#222;
+  color:#d5ad55;
+  border:1px solid #555
+}
+
+.categories button.active{
+  background:#d5ad55;
+  color:#111
+}
+
+h2{
+  text-align:center;
+  color:#d5ad55;
+  margin:25px
+}
+
+.products{
+  padding:10px 5% 65px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:22px
+}
+
+.product{
+  background:#1c1c1c;
+  border:1px solid #333;
+  border-radius:10px;
+  overflow:hidden;
+  text-align:center;
+  padding-bottom:18px;
+  transition:transform .2s,border-color .2s
+}
+
+.product:hover{
+  transform:translateY(-4px);
+  border-color:#d5ad55
+}
+
+.product img{
+  width:100%;
+  height:205px;
+  object-fit:cover;
+  background:#222
+}
+
+.product h3{
+  margin:15px 12px;
+  min-height:42px;
+  font-size:16px
+}
+
+.category{
+  font-size:12px;
+  color:#d5ad55;
+  text-transform:uppercase;
+  letter-spacing:1px
+}
+
+.product button{
+  background:#d5ad55;
+  color:#111;
+  margin-top:8px
+}
+
+.product button:hover{
+  background:#f0cb78
+}
+
+#message{
+  text-align:center;
+  color:#ccc;
+  padding:25px
+}
+
+#cartItems{
+  max-width:700px;
+  margin:20px auto 50px;
+  padding:20px;
+  background:#1c1c1c;
+  border:1px solid #333;
+  border-radius:10px
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid #333
+}
+
+.cart-item button{
+  background:#333;
+  color:white;
+  padding:8px 12px
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  background:#080808;
+  color:#aaa
+}
+
+@media(max-width:500px){
+  header{padding:16px 4%}
+  .logo{font-size:21px}
+  .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:10px 12px 40px}
+  .product img{height:150px}
+  .product h3{font-size:14px}
+  .product button{padding:10px;font-size:11px}
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<div class="logo">VIP STORE</div>
-<div class="cart">🛒 BASKET: <span id="count">0</span></div>
+  <div class="logo">VIP STORE</div>
+  <div class="cart">🛒 BASKET: <span id="count">0</span></div>
 </header>
 
 <section class="hero">
-<h1>WELCOME TO <span>VIP STORE</span></h1>
-<p>Discover quality. Discover style. Shop VIP.</p>
+  <h1>WELCOME TO <span>VIP STORE</span></h1>
+  <p>Discover quality. Discover style. Shop VIP.</p>
 </section>
 
-<input class="search" id="search" placeholder="Search products..." oninput="render()">
+<input
+  class="search"
+  id="search"
+  placeholder="Search products..."
+  autocomplete="off"
+>
 
 <nav class="categories" id="categories">
-<button class="active" onclick="setCategory('All',this)">ALL</button>
-<button onclick="setCategory('Electronics',this)">ELECTRONICS</button>
-<button onclick="setCategory('Fashion',this)">FASHION</button>
-<button onclick="setCategory('Home',this)">HOME</button>
-<button onclick="setCategory('Lifestyle',this)">LIFESTYLE</button>
+  <button class="active" data-category="All">ALL</button>
+  <button data-category="Electronics">ELECTRONICS</button>
+  <button data-category="Fashion">FASHION</button>
+  <button data-category="Home">HOME</button>
+  <button data-category="Lifestyle">LIFESTYLE</button>
 </nav>
 
 <h2>OUR COLLECTION</h2>
-<section class="products" id="products"></section>
+
+<section class="products" id="products">
+  <p id="message">Loading VIP STORE products...</p>
+</section>
 
 <section id="cartItems"></section>
 
 <footer>
-<p>VIP STORE © 2026</p>
-<p>Premium shopping, made simple.</p>
+  <p>VIP STORE © 2026</p>
+  <p>Premium shopping, made simple.</p>
 </footer>
 
-
 <script>
-
 const items = [];
-
 let category = "All";
-
 let basket = [];
-
-const categoryKeywords = {
-  All: "headphones",
-  Electronics: "headphones",
-  Fashion: "watch",
-  Home: "lamp",
-  Lifestyle: "fitness"
-};
+let requestNumber = 0;
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -100,16 +266,21 @@ function setCategory(value, button) {
     .forEach(b => b.classList.remove("active"));
 
   button.classList.add("active");
-
   loadProducts();
 }
 
+document.querySelectorAll(".categories button").forEach(button => {
+  button.addEventListener("click", () => {
+    setCategory(button.dataset.category, button);
+  });
+});
 
-    async function loadProducts() {
+async function loadProducts() {
+  const currentRequest = ++requestNumber;
   const search = document.getElementById("search").value.trim();
+  const products = document.getElementById("products");
 
-  document.getElementById("products").innerHTML =
-    "<p>Loading VIP STORE products...</p>";
+  products.innerHTML = '<p id="message">Loading VIP STORE products...</p>';
 
   try {
     const params = new URLSearchParams();
@@ -121,20 +292,46 @@ function setCategory(value, button) {
     }
 
     const response = await fetch("/api/cj/products?" + params.toString());
-    const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || "Could not load products.");
+      throw new Error("Could not load products");
     }
 
+    const result = await response.json();
+
+    if (currentRequest !== requestNumber) return;
+
+    const received = result.products || [];
+
+    // Remove products with the same ID or identical name.
+    const seenIDs = new Set();
+    const seenNames = new Set();
+
+    const uniqueProducts = received.filter(product => {
+      const id = String(product.id || "");
+      const name = String(product.name || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+
+      if (!name || seenNames.has(name)) return false;
+      if (id && seenIDs.has(id)) return false;
+
+      seenNames.add(name);
+      if (id) seenIDs.add(id);
+
+      return true;
+    });
+
     items.length = 0;
-    items.push(...(result.products || []));
+    items.push(...uniqueProducts);
 
     render();
 
   } catch (error) {
-    document.getElementById("products").innerHTML =
-      "<p>Products could not be loaded. Please try again.</p>";
+    if (currentRequest !== requestNumber) return;
+
+    products.innerHTML =
+      '<p id="message">Products could not be loaded. Please try again.</p>';
   }
 }
 
@@ -142,52 +339,71 @@ function render() {
   const products = document.getElementById("products");
 
   if (!items.length) {
-    products.innerHTML = "<p>No products found.</p>";
+    products.innerHTML =
+      '<p id="message">No products found. Try another search.</p>';
     return;
   }
 
-  products.innerHTML = items.map(p => `
+  products.innerHTML = items.map((p, index) => `
     <div class="product">
-      <img src="${escapeHTML(p.image)}"
-           alt="${escapeHTML(p.name)}"
-           loading="lazy">
-      <p class="category">CJ DROPSHIPPING</p>
+      <img
+        src="${escapeHTML(p.image)}"
+        alt="${escapeHTML(p.name)}"
+        loading="lazy"
+      >
+
+      <p class="category">
+        ${escapeHTML(p.category || category)}
+      </p>
+
       <h3>${escapeHTML(p.name)}</h3>
-      <p class="price">Supplier cost: $${escapeHTML(p.supplierPriceUSD)}</p>
-      <button onclick="add('${escapeHTML(p.id)}')">
+
+      <button onclick="add(${index})">
         ADD TO BASKET
       </button>
     </div>
   `).join("");
 }
-function add(id) {
-  const product = items.find(p => p.id === id);
+
+function add(index) {
+  const product = items[index];
 
   if (!product) return;
 
   basket.push(product);
+
   document.getElementById("count").textContent = basket.length;
   showCart();
 }
 
 function showCart() {
-  document.getElementById("cartItems").innerHTML =
+  const cart = document.getElementById("cartItems");
+
+  cart.innerHTML =
     "<h2>YOUR BASKET</h2>" +
     (basket.length
-      ? basket.map((p, i) =>
-          `<p>${escapeHTML(p.name)}
-          <button onclick="removeItem(${i})">Remove</button></p>`
-        ).join("")
-      : "<p>Your basket is empty.</p>");
+      ? basket.map((p, index) => `
+          <div class="cart-item">
+            <span>${escapeHTML(p.name)}</span>
+            <button onclick="removeItem(${index})">REMOVE</button>
+          </div>
+        `).join("")
+      : "<p style='text-align:center'>Your basket is empty.</p>");
 }
 
-function removeItem(i) {
-  basket.splice(i, 1);
+function removeItem(index) {
+  basket.splice(index, 1);
+
   document.getElementById("count").textContent = basket.length;
   showCart();
 }
 
-document.getElementById("search").oninput = loadProducts;
+let searchTimer;
+
+document.getElementById("search").addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(loadProducts, 400);
+});
 
 loadProducts();
 showCart();
