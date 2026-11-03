@@ -255,6 +255,22 @@ footer{
   .product h3{font-size:14px}
   .product button{padding:10px;font-size:11px}
 }
+#cartItems {
+
+  display: none;
+
+  background: #181818;
+
+  color: white;
+
+  padding: 20px;
+
+  margin: 20px;
+
+  border: 1px solid #d5ad55;
+
+  border-radius: 12px;
+}
 </style>
 </head>
 
@@ -262,9 +278,12 @@ footer{
 
 <header>
   <div class="logo">VIP STORE</div>
-  <div class="cart">🛒 BASKET: <span id="count">0</span></div>
-</header>
+<div class="cart" onclick="toggleCart()" style="cursor:pointer">
 
+  🛒 BASKET: <span id="count">0</span>
+
+</div>
+</header>
 <section class="hero">
   <h1>WELCOME TO <span>VIP STORE</span></h1>
   <p>Discover quality. Discover style. Shop VIP.</p>
@@ -579,7 +598,7 @@ function showCart() {
 
   }, 0);
 
-  cart.innerHTML =
+    cart.innerHTML =
 
     "<h2>YOUR BASKET</h2>" +
 
@@ -630,7 +649,23 @@ function showCart() {
       : "<p style='text-align:center'>Your basket is empty.</p>");
 
 }
+function toggleCart() {
 
+  const cart = document.getElementById("cartItems");
+
+  if (cart.style.display === "block") {
+
+    cart.style.display = "none";
+
+  } else {
+
+    showCart();
+
+    cart.style.display = "block";
+
+  }
+
+}
 function removeItem(index) {
 
   basket.splice(index, 1);
