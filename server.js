@@ -145,5 +145,53 @@ app.get("/api/supplier/status", async (_req, res) => {
     });
   }
 });
+// Search real CJdropshipping products
+app.get("/api/cj/products", async (req, res) => {
+  try {
+    const token = await getCJAccessToken();
 
+    const keyword = String(req.query.keyword || "headphones").slice(0, 100);
+
+    const url = new URL(
+      "https://developers.cjdropshipping.com/api2.0/v1/product/listV2"
+    );
+
+    url.searchParams.set("page", "1");
+    url.searchParams.set("size", "10");
+    url.searchParams.set("keyWord", keyword);
+    url.searchParams.set("countryCode", "GB");
+
+    const response = await fetch(url, {
+      headers: {
+        "CJ-Access-Token": token
+      }
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || result.code !== 200) {
+      throw new Error(result.message || "CJ product search failed.");
+    }
+
+    const products = (result.data?.content || [])
+      .flatMap(item => item.productList || [])
+      .map(product => ({
+        id: product.id,
+        name: product.nameEn,
+        image: product.bigImage,
+        supplierPriceUSD: product.sellPrice,
+        sku: product.sku
+      }));
+
+    res.json({
+      provider: "cjdropshipping",
+      count: products.length,
+      products
+    });
+
+  } catch (err) {
+    console.error("CJ product search error:", err.message);
+    res.status(502).json({ error: err.message });
+  }
+});
 app.listen(port, () => console.log(`VIP STORE running at http://localhost:${port}`));
