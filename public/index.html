@@ -695,3 +695,18 @@ function removeItem(index) {
   updateCart();
 
 }
+let searchTimer;
+
+document.getElementById("search").addEventListener("input", () => {
+
+  clearTimeout(searchTimer);
+
+  searchTimer = setTimeout(loadProducts, 400);
+
+});
+
+loadExchangeRate();
+
+loadProducts();
+
+showCart()
