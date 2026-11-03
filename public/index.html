@@ -653,15 +653,25 @@ function toggleCart() {
 
   const cart = document.getElementById("cartItems");
 
-  if (cart.style.display === "block") {
+  if (!cart) {
 
-    cart.style.display = "none";
+    alert("CART SECTION NOT FOUND");
 
-  } else {
+    return;
+
+  }
+
+  if (getComputedStyle(cart).display === "none") {
 
     showCart();
 
     cart.style.display = "block";
+
+    cart.style.visibility = "visible";
+
+  } else {
+
+    cart.style.display = "none";
 
   }
 
