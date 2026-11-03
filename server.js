@@ -77,14 +77,73 @@ app.post("/api/create-checkout-session", async (req, res) => {
   }
 });
 
-// Supplier adapter placeholder. Add CJ/Avasam API calls only after account approval,
-// API credentials, product mapping, live stock and shipping rules are configured.
-app.get("/api/supplier/status", (_req, res) => {
-  res.json({
-    provider: process.env.SUPPLIER_PROVIDER || "not-configured",
-    connected: false,
-    message: "Supplier API is not connected yet. Configure credentials and implement product sync/order fulfilment before accepting live orders."
-  });
+// CJdropshipping API connection
+let cjTokenCache = null;
+
+async function getCJAccessToken() {
+  const apiKey = process.env.CJ_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("CJ_API_KEY is missing.");
+  }
+
+  if (cjTokenCache && cjTokenCache.expiresAt > Date.now() + 60000) {
+    return cjTokenCache.accessToken;
+  }
+
+  const response = await fetch(
+    "https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ apiKey })
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || result.code !== 200 || !result.data?.accessToken) {
+    throw new Error(result.message || "CJ authentication failed.");
+  }
+
+  cjTokenCache = {
+    accessToken: result.data.accessToken,
+    expiresAt: result.data.accessTokenExpiryDate
+      ? new Date(result.data.accessTokenExpiryDate).getTime()
+      : Date.now() + 180 * 24 * 60 * 60 * 1000
+  };
+
+  return cjTokenCache.accessToken;
+}
+
+app.get("/api/supplier/status", async (_req, res) => {
+  if (!process.env.CJ_API_KEY) {
+    return res.status(503).json({
+      provider: "cjdropshipping",
+      connected: false,
+      message: "CJ_API_KEY is missing."
+    });
+  }
+
+  try {
+    await getCJAccessToken();
+
+    return res.json({
+      provider: "cjdropshipping",
+      connected: true,
+      message: "CJ API authentication successful."
+    });
+  } catch (err) {
+    console.error("CJ authentication error:", err.message);
+
+    return res.status(502).json({
+      provider: "cjdropshipping",
+      connected: false,
+      message: err.message
+    });
+  }
 });
 
 app.listen(port, () => console.log(`VIP STORE running at http://localhost:${port}`));
