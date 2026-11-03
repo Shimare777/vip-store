@@ -417,7 +417,15 @@ async function loadProducts() {
       params.set("category", category);
     }
 
-    const response = await fetch("/api/cj/products?" + params.toString());
+if (search) {
+
+  params.set("keyword", search);
+
+} else {
+
+  params.set("category", category);
+
+}
 
 console.log("CJ RESPONSE STATUS:", response.status);
 
