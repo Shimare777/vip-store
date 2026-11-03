@@ -443,37 +443,15 @@ async function loadProducts() {
 
     if (currentRequest !== requestNumber) return;
 
-    const received = result.products || [];
+    const received = Array.isArray(result.products)
 
-    const seenIDs = new Set();
+      ? result.products
 
-    const seenNames = new Set();
-
-    const uniqueProducts = received.filter(product => {
-
-      const id = String(product.id || "");
-
-      const name = String(product.name || "")
-
-        .toLowerCase()
-
-        .replace(/[^a-z0-9]/g, "");
-
-      if (!name || seenNames.has(name)) return false;
-
-      if (id && seenIDs.has(id)) return false;
-
-      seenNames.add(name);
-
-      if (id) seenIDs.add(id);
-
-      return true;
-
-    });
+      : [];
 
     items.length = 0;
 
-    items.push(...uniqueProducts);
+    items.push(...received);
 
     render();
 
