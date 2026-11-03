@@ -144,7 +144,8 @@ app.get("/api/supplier/status", async (_req, res) => {
       message: err.message
     });
   }
-});// Search multiple CJdropshipping product categories
+
+// Search CJdropshipping products by category
 app.get("/api/cj/products", async (req, res) => {
   try {
     const token = await getCJAccessToken();
@@ -152,42 +153,63 @@ app.get("/api/cj/products", async (req, res) => {
     const category = String(req.query.category || "All");
     const search = String(req.query.keyword || "").trim().slice(0, 100);
 
-    const keywords = {
-      All: ["headphones", "watch", "speaker", "bag", "lamp", "jewelry", "fitness", "sunglasses"],
-      Electronics: ["headphones", "smart watch", "speaker", "earbuds", "gaming headset"],
-      Fashion: ["watch", "sunglasses", "handbag", "backpack", "jewelry"],
-      Home: ["lamp", "vase", "wall clock", "cushion", "desk light"],
-      Lifestyle: ["water bottle", "sports bag", "yoga mat", "travel accessories", "fitness"]
+    const categoryKeywords = {
+      Electronics: ["headphones", "smart watch", "bluetooth speaker", "wireless earbuds"],
+      Fashion: ["sunglasses", "handbag", "fashion watch", "jewelry"],
+      Home: ["table lamp", "wall clock", "vase", "home decor"],
+      Lifestyle: ["water bottle", "yoga mat", "sports bag", "travel accessories"]
     };
 
-    const terms = search
-      ? [search]
-      : (keywords[category] || keywords.All);
+    let searches = [];
+
+    if (search) {
+      searches = [{ keyword: search, category: "Search" }];
+    } else if (category === "All") {
+      searches = Object.entries(categoryKeywords).flatMap(
+        ([group, terms]) => terms.map(keyword => ({
+          keyword,
+          category: group
+        }))
+      );
+    } else {
+      searches = (categoryKeywords[category] || categoryKeywords.Electronics)
+        .map(keyword => ({ keyword, category }));
+    }
 
     const results = await Promise.all(
-      terms.map(async keyword => {
-        const url = new URL(
-          "https://developers.cjdropshipping.com/api2.0/v1/product/listV2"
-        );
+      searches.map(async ({ keyword, category: group }) => {
+        try {
+          const url = new URL(
+            "https://developers.cjdropshipping.com/api2.0/v1/product/listV2"
+          );
 
-        url.searchParams.set("page", "1");
-        url.searchParams.set("size", "100");
-        url.searchParams.set("keyWord", keyword);
-        url.searchParams.set("countryCode", "GB");
+          url.searchParams.set("page", "1");
+          url.searchParams.set("size", "100");
+          url.searchParams.set("keyWord", keyword);
+          url.searchParams.set("countryCode", "GB");
 
-        const response = await fetch(url, {
-          headers: { "CJ-Access-Token": token }
-        });
+          const response = await fetch(url, {
+            headers: { "CJ-Access-Token": token }
+          });
 
-        const result = await response.json();
+          const result = await response.json();
 
-        if (!response.ok || result.code !== 200) {
-          console.error("CJ search failed:", keyword, result.message);
+          if (!response.ok || result.code !== 200) {
+            console.error("CJ search failed:", keyword, result.message);
+            return [];
+          }
+
+          return (result.data?.content || [])
+            .flatMap(item => item.productList || [])
+            .slice(0, 10)
+            .map(product => ({
+              ...product,
+              storeCategory: group
+            }));
+        } catch (error) {
+          console.error("CJ search error:", keyword, error.message);
           return [];
         }
-
-        return (result.data?.content || [])
-          .flatMap(item => item.productList || []);
       })
     );
 
@@ -200,7 +222,8 @@ app.get("/api/cj/products", async (req, res) => {
           name: product.nameEn,
           image: product.bigImage,
           supplierPriceUSD: product.sellPrice,
-          sku: product.sku
+          sku: product.sku,
+          category: product.storeCategory
         });
       }
     });
@@ -216,4 +239,5 @@ app.get("/api/cj/products", async (req, res) => {
     res.status(502).json({ error: err.message });
   }
 });
+
 app.listen(port, () => console.log(`VIP STORE running at http://localhost:${port}`));
