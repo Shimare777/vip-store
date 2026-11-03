@@ -419,11 +419,11 @@ async function loadProducts() {
 
     const response = await fetch("/api/cj/products?" + params.toString());
 
-    if (!response.ok) {
-      throw new Error("Could not load products");
-    }
+console.log("CJ RESPONSE STATUS:", response.status);
 
-    const result = await response.json();
+const result = await response.json();
+
+console.log("CJ PRODUCTS:", result);
 
     if (currentRequest !== requestNumber) return;
 
