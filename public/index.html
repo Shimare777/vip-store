@@ -614,6 +614,12 @@ function removeItem(index) {
 
 }
 
+  basket.splice(index, 1);
+
+  updateCart();
+
+}
+
   document.getElementById("count").textContent = basket.length;
   showCart();
 }
