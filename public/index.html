@@ -106,16 +106,20 @@ function setCategory(value, button) {
 
 async function loadProducts() {
   const search = document.getElementById("search").value.trim();
-  const keyword = search || categoryKeywords[category] || "headphones";
 
   document.getElementById("products").innerHTML =
     "<p>Loading VIP STORE products...</p>";
 
   try {
-    const response = await fetch(
-      "/api/cj/products?keyword=" + encodeURIComponent(keyword)
-    );
+    const params = new URLSearchParams();
 
+    if (search) {
+      params.set("keyword", search);
+    } else {
+      params.set("category", category);
+    }
+
+    const response = await fetch("/api/cj/products?" + params.toString());
     const result = await response.json();
 
     if (!response.ok) {
@@ -124,6 +128,14 @@ async function loadProducts() {
 
     items.length = 0;
     items.push(...(result.products || []));
+
+    render();
+
+  } catch (error) {
+    document.getElementById("products").innerHTML =
+      "<p>Products could not be loaded. Please try again.</p>";
+  }
+}
 
     render();
 
