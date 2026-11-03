@@ -333,12 +333,18 @@ async function loadProducts() {
     console.error("VIP STORE ERROR:", error);
 
 products.innerHTML = `
-  <p id="message">
-    Loading error: ${escapeHTML(error.message)}
-  </p>
-`;
-}
 
+  <p id="message">
+
+    Loading error: ${escapeHTML(error.message)}
+
+  </p>
+
+  `;
+
+  }
+
+}
 function render() {
   const products = document.getElementById("products");
 
