@@ -299,9 +299,29 @@ footer{
 </footer>
 <script>
 
-document.getElementById("products").innerHTML =
+window.addEventListener("error", function(event) {
 
-  "<p style='color:gold;text-align:center'>JAVASCRIPT TEST FUNKTIONIERT</p>";
+  document.getElementById("products").innerHTML =
+
+    "<p style='color:#ff5555;padding:20px;text-align:center'>" +
+
+    "JAVASCRIPT FEHLER: " + event.message +
+
+    "</p>";
+
+});
+
+window.addEventListener("unhandledrejection", function(event) {
+
+  document.getElementById("products").innerHTML =
+
+    "<p style='color:#ff5555;padding:20px;text-align:center'>" +
+
+    "FETCH FEHLER: " + event.reason +
+
+    "</p>";
+
+});
 
 </script>
 <script>
