@@ -144,49 +144,71 @@ app.get("/api/supplier/status", async (_req, res) => {
       message: err.message
     });
   }
-});
-// Search real CJdropshipping products
+});// Search multiple CJdropshipping product categories
 app.get("/api/cj/products", async (req, res) => {
   try {
     const token = await getCJAccessToken();
 
-    const keyword = String(req.query.keyword || "headphones").slice(0, 100);
+    const category = String(req.query.category || "All");
+    const search = String(req.query.keyword || "").trim().slice(0, 100);
 
-    const url = new URL(
-      "https://developers.cjdropshipping.com/api2.0/v1/product/listV2"
+    const keywords = {
+      All: ["headphones", "watch", "speaker", "bag", "lamp", "jewelry", "fitness", "sunglasses"],
+      Electronics: ["headphones", "smart watch", "speaker", "earbuds", "gaming headset"],
+      Fashion: ["watch", "sunglasses", "handbag", "backpack", "jewelry"],
+      Home: ["lamp", "vase", "wall clock", "cushion", "desk light"],
+      Lifestyle: ["water bottle", "sports bag", "yoga mat", "travel accessories", "fitness"]
+    };
+
+    const terms = search
+      ? [search]
+      : (keywords[category] || keywords.All);
+
+    const results = await Promise.all(
+      terms.map(async keyword => {
+        const url = new URL(
+          "https://developers.cjdropshipping.com/api2.0/v1/product/listV2"
+        );
+
+        url.searchParams.set("page", "1");
+        url.searchParams.set("size", "100");
+        url.searchParams.set("keyWord", keyword);
+        url.searchParams.set("countryCode", "GB");
+
+        const response = await fetch(url, {
+          headers: { "CJ-Access-Token": token }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || result.code !== 200) {
+          console.error("CJ search failed:", keyword, result.message);
+          return [];
+        }
+
+        return (result.data?.content || [])
+          .flatMap(item => item.productList || []);
+      })
     );
 
-    url.searchParams.set("page", "1");
-    url.searchParams.set("size", "10");
-    url.searchParams.set("keyWord", keyword);
-    url.searchParams.set("countryCode", "GB");
+    const unique = new Map();
 
-    const response = await fetch(url, {
-      headers: {
-        "CJ-Access-Token": token
+    results.flat().forEach(product => {
+      if (product.id && !unique.has(product.id)) {
+        unique.set(product.id, {
+          id: product.id,
+          name: product.nameEn,
+          image: product.bigImage,
+          supplierPriceUSD: product.sellPrice,
+          sku: product.sku
+        });
       }
     });
 
-    const result = await response.json();
-
-    if (!response.ok || result.code !== 200) {
-      throw new Error(result.message || "CJ product search failed.");
-    }
-
-    const products = (result.data?.content || [])
-      .flatMap(item => item.productList || [])
-      .map(product => ({
-        id: product.id,
-        name: product.nameEn,
-        image: product.bigImage,
-        supplierPriceUSD: product.sellPrice,
-        sku: product.sku
-      }));
-
     res.json({
       provider: "cjdropshipping",
-      count: products.length,
-      products
+      count: unique.size,
+      products: Array.from(unique.values())
     });
 
   } catch (err) {
