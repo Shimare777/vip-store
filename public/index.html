@@ -104,7 +104,8 @@ function setCategory(value, button) {
   loadProducts();
 }
 
-async function loadProducts() {
+
+    async function loadProducts() {
   const search = document.getElementById("search").value.trim();
 
   document.getElementById("products").innerHTML =
@@ -136,17 +137,6 @@ async function loadProducts() {
       "<p>Products could not be loaded. Please try again.</p>";
   }
 }
-
-    render();
-
-  } catch (error) {
-    document.getElementById("products").innerHTML =
-      "<p>Products could not be loaded. Please try again.</p>";
-  }
-}
-
-function render() {
-  const products = document.getElementById("products");
 
   if (!items.length) {
     products.innerHTML = "<p>No products found.</p>";
