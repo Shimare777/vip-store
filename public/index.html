@@ -154,7 +154,17 @@ h2{
 .product button:hover{
   background:#f0cb78
 }
+.price {
 
+  color: #d5ad55;
+
+  font-size: 21px;
+
+  font-weight: bold;
+
+  margin: 12px;
+
+}
 #message{
   text-align:center;
   color:#ccc;
@@ -248,7 +258,53 @@ const items = [];
 let category = "All";
 let basket = [];
 let requestNumber = 0;
+let usdToGbp = 0.75;
 
+async function loadExchangeRate() {
+
+  try {
+
+    const response = await fetch(
+
+      "https://api.frankfurter.dev/v1/latest?base=USD&symbols=GBP"
+
+    );
+
+    if (!response.ok) throw new Error("Exchange rate unavailable");
+
+    const data = await response.json();
+
+    if (Number.isFinite(data.rates?.GBP)) {
+
+      usdToGbp = data.rates.GBP;
+
+      render();
+
+    }
+
+  } catch (error) {
+
+    console.warn("Using fallback exchange rate:", error.message);
+
+  }
+
+}
+
+function formatPrice(usd) {
+
+  const amount = Number(usd);
+
+  if (!Number.isFinite(amount)) return "Price unavailable";
+
+  return new Intl.NumberFormat("en-GB", {
+
+    style: "currency",
+
+    currency: "GBP"
+
+  }).format(amount * usdToGbp * 2);
+
+}
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -362,11 +418,15 @@ function render() {
         loading="lazy"
       >
 
-      <p class="category">
-        ${escapeHTML(p.category || category)}
-      </p>
+     <p class="category">
 
-      <h3>${escapeHTML(p.name)}</h3>
+  ${escapeHTML(p.category || category)}
+
+</p>
+
+<h3>${escapeHTML(p.name)}</h3>
+
+<p class="price">${formatPrice(p.supplierPriceUSD)}</p>
 
       <button onclick="add(${index})">
         ADD TO BASKET
@@ -415,7 +475,10 @@ document.getElementById("search").addEventListener("input", () => {
   searchTimer = setTimeout(loadProducts, 400);
 });
 
+loadExchangeRate();
+
 loadProducts();
+
 showCart();
 </script>
 
