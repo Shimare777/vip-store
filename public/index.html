@@ -618,19 +618,74 @@ function removeItem(index) {
   showCart();
 }
 
-let searchTimer;
+function showCart() {
 
-document.getElementById("search").addEventListener("input", () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(loadProducts, 400);
-});
+  const cart = document.getElementById("cartItems");
 
-loadExchangeRate();
+  const total = basket.reduce((sum, item) => {
 
-loadProducts();
+    return sum +
 
-showCart();
-</script>
+      Number(item.product.supplierPriceUSD) * item.quantity;
 
-</body>
-</html>
+  }, 0);
+
+  cart.innerHTML =
+
+    "<h2>YOUR BASKET</h2>" +
+
+    (basket.length
+
+      ? basket.map((item, index) => `
+
+          <div class="cart-item">
+
+            <div>
+
+              <strong>${escapeHTML(item.product.name)}</strong>
+
+              <p class="price">
+
+                ${formatPrice(item.product.supplierPriceUSD)}
+
+              </p>
+
+              <p>Quantity: ${item.quantity}</p>
+
+              <p>
+
+                Subtotal:
+
+                ${formatPrice(
+
+                  Number(item.product.supplierPriceUSD) * item.quantity
+
+                )}
+
+              </p>
+
+              <button onclick="changeQuantity(${index}, -1)">−</button>
+
+              <button onclick="changeQuantity(${index}, 1)">+</button>
+
+              <button onclick="removeItem(${index})">REMOVE</button>
+
+            </div>
+
+          </div>
+
+        `).join("") +
+
+        `<h2>TOTAL: ${formatPrice(total)}</h2>`
+
+      : "<p style='text-align:center'>Your basket is empty.</p>");
+
+}
+
+function removeItem(index) {
+
+  basket.splice(index, 1);
+
+  updateCart();
+
+}
